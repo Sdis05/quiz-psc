@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiz Premiers Secours – Les bons réflexes</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:#f3f4f6;color:#222}
+.wrap{max-width:850px;margin:auto;padding:22px}
+h1{font-size:clamp(1.45rem,4vw,2rem);line-height:1.25;margin:8px 0}
+.card{background:#fff;border-radius:16px;padding:22px;margin-top:18px;box-shadow:0 2px 12px #0000000a}
+.intro{line-height:1.55;color:#444}
+button{padding:13px 18px;margin:7px 0;border:0;border-radius:10px;background:#b52222;color:white;font-weight:bold;cursor:pointer;font-size:1rem}
+button:focus-visible{outline:3px solid #222;outline-offset:3px}
+button:disabled{cursor:default;opacity:1}
+.choice{display:block;width:100%;text-align:left;background:white;color:#222;border:2px solid #ddd;line-height:1.4}
+.choice:hover:not(:disabled){border-color:#b52222;background:#fff8f7}
+.correct{border-color:#187a3d!important;background:#edf8f0!important}
+.wrong{border-color:#b52222!important;background:#fdecec!important}
+.hidden{display:none}
+.progress{height:8px;background:#ddd;border-radius:10px;overflow:hidden;margin:12px 0 20px}
+.progress span{display:block;height:100%;background:#b52222;transition:width .2s}
+.meta{font-size:.9rem;color:#666}
+.feedback{margin-top:18px;padding:15px;background:#f8f8f8;border-left:5px solid #b52222;border-radius:8px;line-height:1.5}
+.score{text-align:center;font-size:2.3rem;font-weight:bold;margin:22px 0;color:#b52222}
+.score-message{background:#f8f8f8;border-left:5px solid #b52222;padding:16px;border-radius:8px;line-height:1.5}
+.footer{font-size:.85rem;color:#666;text-align:center;margin:18px 0}
+@media(max-width:520px){.wrap{padding:14px}.card{padding:18px}.choice{padding:13px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>👐 Quiz Premiers Secours – Les bons réflexes</h1>
+<div id="app" class="card">
+<p class="intro">Bienvenue ! Ce petit quiz vous propose des situations de la vie quotidienne. Choisissez la réaction qui vous semble la plus adaptée. Après chaque réponse, une explication vous aidera à retenir le bon réflexe.</p>
+<p class="intro"><strong>Ce n’est pas un examen :</strong> l’objectif est de faire le point et de repartir avec des réflexes utiles.</p>
+<button onclick="startQuiz()">Commencer le quiz →</button>
+</div>
+<div class="footer">Journée découverte des premiers secours – SDIS</div>
+</div>
+<script>
+const questions = [
+{theme:"Protéger",q:"Vous êtes témoin d’un accident sur la route. Avant d’aller aider les personnes, que faites-vous ?",choices:["Vous vous précipitez vers la victime.","Vous regardez d’abord s’il existe un danger pour vous, la victime ou les autres.","Vous déplacez immédiatement la victime."],correct:1,exp:"Avant d’approcher, prenez quelques secondes pour repérer les dangers : circulation, feu, électricité… Ne vous mettez pas en danger et évitez un nouvel accident."},
+{theme:"Alerter",q:"Vous appelez les secours. Quelles informations sont particulièrement importantes à donner ?",choices:["Votre prénom uniquement.","L’adresse précise, ce qui s’est passé et le nombre de personnes concernées si vous le connaissez.","Votre avis sur la gravité de la situation, sans préciser le lieu."],correct:1,exp:"Donnez d’abord le lieu le plus précis possible, expliquez ce qui se passe et indiquez ce que vous constatez. Répondez aux questions et ne raccrochez pas avant que l’opérateur vous le dise."},
+{theme:"Alerter",q:"Après avoir appelé les secours, que faites-vous ?",choices:["Vous raccrochez et partez immédiatement.","Vous suivez les consignes données au téléphone et restez auprès de la victime si cela ne vous met pas en danger.","Vous rappelez plusieurs fois pour accélérer leur arrivée."],correct:1,exp:"L’opérateur peut vous guider. Suivez ses indications, facilitez l’accès des secours et continuez à surveiller la situation."},
+{theme:"Saignement",q:"Une personne se coupe profondément et le sang coule abondamment. Quel est le bon premier réflexe ?",choices:["Appuyer directement et fermement sur l’endroit qui saigne, en vous protégeant si possible les mains.","Rincer longuement la plaie avant d’agir.","Attendre quelques minutes pour voir si le saignement s’arrête."],correct:0,exp:"Face à un saignement abondant, il faut agir sans attendre en exerçant une pression directe sur la plaie. Faites alerter les secours et suivez leurs consignes."},
+{theme:"Saignement",q:"Vous aidez une personne qui saigne abondamment. Que faut-il éviter ?",choices:["Rester auprès d’elle et la rassurer.","Faire prévenir les secours.","Retirer un objet planté dans la plaie."],correct:2,exp:"Ne retirez pas un objet planté dans une plaie : cela pourrait aggraver le saignement. Stabilisez-le sans appuyer dessus et demandez une aide médicale urgente."},
+{theme:"Étouffement",q:"Pendant un repas, une personne porte les mains à sa gorge. Elle ne peut plus parler, tousser ni respirer. Que faites-vous ?",choices:["Vous lui donnez immédiatement un verre d’eau.","Vous lui donnez des claques dans le dos selon les gestes appris et faites alerter les secours.","Vous lui demandez de s’allonger et d’attendre."],correct:1,exp:"Ces signes évoquent un étouffement grave. Il faut agir immédiatement avec les gestes de désobstruction adaptés, en alternant les techniques prévues si nécessaire. Faites alerter les secours."},
+{theme:"Étouffement",q:"Une personne tousse fortement après avoir avalé de travers, mais elle arrive à parler et à respirer. Quelle attitude est la plus adaptée ?",choices:["L’encourager à continuer de tousser et la surveiller.","Lui donner des claques dans le dos tout de suite, même si elle tousse efficacement.","Lui faire boire rapidement."],correct:0,exp:"Si la personne tousse efficacement, encouragez-la à tousser et surveillez-la. Ne donnez pas de gestes de désobstruction tant que la toux reste efficace."},
+{theme:"Perte de connaissance",q:"Une personne s’effondre et ne répond pas lorsque vous lui parlez. Quelle est la première chose à vérifier ?",choices:["Si elle a son téléphone sur elle.","Si elle réagit, puis si elle respire normalement, en demandant de l’aide.","Si elle peut se relever."],correct:1,exp:"Vérifiez si la personne répond et réagit. Si elle ne réagit pas, faites alerter les secours et vérifiez sa respiration pendant au maximum 10 secondes."},
+{theme:"Perte de connaissance",q:"Une personne est inconsciente mais respire normalement. Que faites-vous ?",choices:["Vous la laissez sur le dos sans la surveiller.","Vous la mettez sur le côté en position adaptée, vous alertez les secours et surveillez sa respiration.","Vous lui donnez à boire."],correct:1,exp:"Une personne inconsciente qui respire normalement doit être placée en position latérale de sécurité, sauf situation particulière nécessitant une conduite adaptée. Alertez les secours et surveillez sa respiration."},
+{theme:"Arrêt cardiaque",q:"Une personne ne répond pas et ne respire pas normalement. Quelle est votre priorité ?",choices:["Commencer immédiatement les gestes de réanimation et faire apporter un défibrillateur, avec l’aide des secours au téléphone.","La mettre sur le côté et attendre.","Lui donner quelque chose à boire."],correct:0,exp:"Une personne inconsciente qui ne respire pas normalement est peut-être en arrêt cardiaque. Faites alerter les secours, commencez le massage cardiaque et utilisez un défibrillateur dès qu’il est disponible. Le téléphone peut vous guider."},
+{theme:"Défibrillateur",q:"Un défibrillateur automatisé externe est disponible. Vous n’en avez jamais utilisé. Que faites-vous ?",choices:["Vous n’y touchez pas, car son utilisation est réservée aux professionnels.","Vous l’allumez et suivez simplement les instructions vocales et visuelles de l’appareil.","Vous attendez l’arrivée des secours avant de l’ouvrir."],correct:1,exp:"Le défibrillateur est conçu pour être utilisé par le grand public. Allumez-le et suivez ses consignes. Il analyse la situation et indique si un choc est nécessaire."},
+{theme:"Malaise",q:"Une personne vous dit qu’elle ressent une douleur dans la poitrine et se sent mal. Que faites-vous ?",choices:["Vous lui proposez de marcher pour voir si cela passe.","Vous arrêtez toute activité, l’installez dans une position confortable, alertez les secours et surveillez son état.","Vous lui donnez à manger pour reprendre des forces."],correct:1,exp:"Une douleur thoracique peut être le signe d’une urgence. Mettez la personne au repos dans la position où elle se sent le mieux, appelez les secours et suivez leurs consignes."},
+{theme:"Malaise",q:"Une personne fait un malaise et vous explique ce qu’elle ressent. Quelle attitude est la plus utile ?",choices:["L’écouter, lui poser des questions simples sur ce qu’elle ressent et depuis quand, puis transmettre ces informations aux secours.","Lui dire que ce n’est sûrement rien.","La faire se lever pour vérifier si elle tient debout."],correct:0,exp:"Écoutez la personne et recueillez les informations utiles : début du malaise, symptômes, antécédents ou traitement si elle peut les communiquer. Transmettez-les aux secours."},
+{theme:"Brûlure",q:"Vous renversez accidentellement une boisson très chaude sur votre avant-bras. Quel est le bon réflexe ?",choices:["Appliquer immédiatement du beurre ou de la crème.","Refroidir la brûlure sous une eau tempérée, sans pression, et demander conseil aux secours selon son importance.","Mettre directement de la glace sur la peau."],correct:1,exp:"Refroidissez rapidement la brûlure avec de l’eau tempérée, sans pression. N’appliquez ni glace, ni produit gras. Alertez les secours si la brûlure est importante ou présente des signes de gravité."},
+{theme:"Traumatisme",q:"Une personne est tombée et se plaint fortement du dos ou du cou. Que faites-vous ?",choices:["Vous l’aidez à se relever pour l’installer confortablement.","Vous évitez de la déplacer, lui demandez de ne pas bouger, alertez les secours et la surveillez.","Vous lui faites faire quelques mouvements pour vérifier qu’elle peut bouger."],correct:1,exp:"Après une chute avec douleur au dos ou au cou, évitez de mobiliser la personne. Rassurez-la, demandez-lui de rester immobile, alertez les secours et surveillez son état."}
+];
+let index=0,score=0,answered=false;
+function startQuiz(){index=0;score=0;render()}
+function render(){
+ answered=false;
+ const q=questions[index],app=document.getElementById("app");
+ app.innerHTML=`<div class="meta">Question ${index+1} sur ${questions.length} · ${q.theme}</div>
+ <div class="progress"><span style="width:${(index/questions.length)*100}%"></span></div>
+ <h2>${q.q}</h2>
+ ${q.choices.map((c,n)=>`<button class="choice" onclick="answer(${n})">${String.fromCharCode(65+n)}. ${c}</button>`).join("")}
+ <div id="feedback" class="hidden"></div>`;
+}
+function answer(n){
+ if(answered)return;answered=true;
+ const q=questions[index],buttons=document.querySelectorAll(".choice");
+ buttons.forEach((b,k)=>{b.disabled=true;if(k===q.correct)b.classList.add("correct");if(k===n&&n!==q.correct)b.classList.add("wrong")});
+ if(n===q.correct)score++;
+ const f=document.getElementById("feedback");f.classList.remove("hidden");
+ f.className="feedback";
+ f.innerHTML=`<strong>${n===q.correct?"Bonne réponse !":"Ce n’est pas la réponse attendue."}</strong><p>${q.exp}</p><button onclick="nextQuestion()">${index===questions.length-1?"Voir mon résultat":"Question suivante →"}</button>`;
+}
+function nextQuestion(){if(index<questions.length-1){index++;render()}else showResult()}
+function showResult(){
+ const pct=Math.round(score/questions.length*100);
+ let message=pct<50?"Vous avez découvert plusieurs réflexes à retenir. C’est justement l’occasion de les revoir avec le formateur.":pct<80?"Vous avez déjà de bons réflexes. La journée permettra de les pratiquer et de les consolider.":"Très bon résultat ! Continuez à pratiquer les gestes et à suivre les conseils des formateurs.";
+ document.getElementById("app").innerHTML=`<h2>🎉 Quiz terminé !</h2><div class="score">${score} / ${questions.length}<br><span style="font-size:1.1rem">${pct} %</span></div><div class="score-message"><strong>${message}</strong><p>Merci pour votre participation à cette journée de découverte des premiers secours au SDIS.</p></div><p class="intro">À retenir : protéger, alerter, agir selon ses capacités et suivre les consignes des secours.</p><button onclick="startQuiz()">Recommencer le questionnaire</button>`;
+}
+</script>
+</body>
+</html>
