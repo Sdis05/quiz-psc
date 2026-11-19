@@ -37,7 +37,7 @@ button:disabled{cursor:default;opacity:1}
 <p class="intro"><strong>Ce n’est pas un examen :</strong> l’objectif est de faire le point et de repartir avec des réflexes utiles.</p>
 <button onclick="startQuiz()">Commencer le quiz →</button>
 </div>
-<div class="footer">Journée découverte des premiers secours – SDIS</div>
+<div class="footer">Premiers Secours Citoyen – SDIS05</div>
 </div>
 <script>
 const questions = [
@@ -81,7 +81,7 @@ function nextQuestion(){if(index<questions.length-1){index++;render()}else showR
 function showResult(){
  const pct=Math.round(score/questions.length*100);
  let message=pct<50?"Vous avez découvert plusieurs réflexes à retenir. C’est justement l’occasion de les revoir avec le formateur.":pct<80?"Vous avez déjà de bons réflexes. La journée permettra de les pratiquer et de les consolider.":"Très bon résultat ! Continuez à pratiquer les gestes et à suivre les conseils des formateurs.";
- document.getElementById("app").innerHTML=`<h2>🎉 Quiz terminé !</h2><div class="score">${score} / ${questions.length}<br><span style="font-size:1.1rem">${pct} %</span></div><div class="score-message"><strong>${message}</strong><p>Merci pour votre participation à cette journée de découverte des premiers secours au SDIS.</p></div><p class="intro">À retenir : protéger, alerter, agir selon ses capacités et suivre les consignes des secours.</p><button onclick="startQuiz()">Recommencer le questionnaire</button>`;
+ document.getElementById("app").innerHTML=`<h2>🎉 Quiz terminé !</h2><div class="score">${score} / ${questions.length}<br><span style="font-size:1.1rem">${pct} %</span></div><div class="score-message"><strong>${message}</strong><p>Merci pour votre participation à ce questionnaire, nous allons maintenant commencer à réaliser des gestes de secours.</p></div><p class="intro">À retenir : protéger, alerter, agir selon ses capacités et suivre les consignes des secours.</p><button onclick="startQuiz()">Recommencer le questionnaire</button>`;
 }
 </script>
 </body>
